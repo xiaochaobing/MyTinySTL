@@ -36,7 +36,10 @@ struct has_iterator_cat
 {
 private:
   struct two { char a; char b; };
+  //通过重载的方式检查是否有某个变量
   template <class U> static two test(...);
+  // 为什么需要 typename？这是模板定义，U 是未知类型，U::iterator_category 在解析期性质不明，默认不是类型。
+  // 编译器需在解析期确认它是类型，加 typename 显式指定其为类型，避免歧义。解析和实例化均在编译期完成。
   template <class U> static char test(typename U::iterator_category* = 0);
 public:
   static const bool value = sizeof(test<T>(0)) == sizeof(char);
